@@ -64,16 +64,19 @@ export default async function imageHandler(req: NextApiRequest, res: NextApiResp
 
 
 function absoluteUrl(req?: NextApiRequest, localhostAddress = "localhost:3000"): URL {
-
-    let host = (req?.headers ? req.headers.host : null) || localhostAddress;
+    
+    let host = process.env.VERCEL_URL || (req?.headers ? req.headers.host : null) || localhostAddress;
     let protocol = /^localhost(:\d+)?$/.test(host) ? "http:" : "https:";
 
-    if (req && req.headers["x-forwarded-host"] && typeof req.headers["x-forwarded-host"] === "string") {
-        host = req.headers["x-forwarded-host"];
-    }
+    // Use the Vercel provided host if available (more safe than possibly provided host)
+    if (!process.env.VERCEL_URL) {
+        if (req && req.headers["x-forwarded-host"] && typeof req.headers["x-forwarded-host"] === "string") {
+            host = req.headers["x-forwarded-host"];
+        }
 
-    if (req && req.headers["x-forwarded-proto"] && typeof req.headers["x-forwarded-proto"] === "string") {
-        protocol = `${req.headers["x-forwarded-proto"]}:`;
+        if (req && req.headers["x-forwarded-proto"] && typeof req.headers["x-forwarded-proto"] === "string") {
+            protocol = `${req.headers["x-forwarded-proto"]}:`;
+        }
     }
 
     let url = new URL(`${protocol}//${host}`);
