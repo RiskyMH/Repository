@@ -63,3 +63,22 @@ export function dateMaker(date) {
 
     return dateNew;
 }
+
+
+export enum requestTypes {
+    buffer
+}
+
+class fakeRequestBuffer {
+    variable: any;
+    constructor(variable) {this.variable = variable;}
+    async arrayBuffer() {return this.variable;}
+}
+
+export function fakeRequest(variable: any, type?: requestTypes ) {
+    if (type === requestTypes.buffer) {
+        return new fakeRequestBuffer(variable);
+    }
+    return variable;
+
+}

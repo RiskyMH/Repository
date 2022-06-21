@@ -2,9 +2,14 @@
 // - Images and ideas from: https://github.com/DankMemer/imgen
 
 import { createCanvas, Image, GlobalFonts } from "@napi-rs/canvas";
-import { request, fetch } from "undici";
+import { request, fetch, Dispatcher } from "undici";
+import BodyReadable from "undici/types/readable.js";
 import { RISKY_API_BASE_URL } from "../index.mjs";
-import { wrapText } from "../tools.mjs";
+import { fakeRequest, requestTypes, wrapText } from "../tools.mjs";
+
+let imageBg: Image;
+let fontBuffered: Buffer;
+let fontEmojiBuffered: Buffer;
 
 
 export default async function makeImg(input: { text: string }, config?: { fontLocation?: string; fontLocationEmoji?: string; cryBgLink?: string }): Promise<Buffer | {error?: string}> {
@@ -18,15 +23,25 @@ export default async function makeImg(input: { text: string }, config?: { fontLo
     let context = canvas.getContext("2d");
 
     try{
-        const [{ body: bodyBg}, {body: font}, {body: fontEmoji }] = await Promise.all([request(config.cryBgLink), request(config.fontLocation), request(config.fontLocationEmoji ?? config.fontLocation)])
+        // const [{ body: bodyBg }, { body: bodyImg } ] = await Promise.all([imageBg ? fakeRequest(imageBg, requestTypes.image): request(config.affectBgLink), request(input.imgLink)])
+        const [{ body: bodyBg}, {body: font}, {body: fontEmoji }]: {body: BodyReadable & Dispatcher.BodyMixin}[] = await Promise.all([
+            imageBg ? fakeRequest(imageBg, requestTypes.buffer): request(config.cryBgLink), 
+            fontBuffered ? fakeRequest(fontBuffered, requestTypes.buffer): request(config.fontLocation), 
+            fontEmojiBuffered ? fakeRequest(fontEmojiBuffered, requestTypes.buffer): request(config.fontLocationEmoji ?? config.fontLocation)
+        ])
         const [bgBuffer, fontBuffer, fontEmojiBuffer] = await Promise.all([bodyBg.arrayBuffer(), font.arrayBuffer(), fontEmoji.arrayBuffer()])
         
-        GlobalFonts.register(Buffer.from(fontBuffer), "tahoma");
-        GlobalFonts.register(Buffer.from(fontEmojiBuffer), "twemoji");
-    
-        const imageBg = new Image();
-        imageBg.src = Buffer.from(bgBuffer);
-        context.drawImage(imageBg, 0, 0, canvas.width, canvas.height);
+        fontBuffered ||= Buffer.from(fontBuffer);
+        fontEmojiBuffered ||= Buffer.from(fontEmojiBuffer);
+
+        GlobalFonts.register(fontBuffered, "tahoma");
+        GlobalFonts.register(fontEmojiBuffered, "twemoji");
+        
+        if (!imageBg) {
+            imageBg = new Image();
+            imageBg.src = Buffer.from(bgBuffer);
+            context.drawImage(imageBg, 0, 0, canvas.width, canvas.height);
+        }
         
     } catch (e) {console.error(e); return{error: "Error when fetching assets"}}
 
