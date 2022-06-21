@@ -1,7 +1,6 @@
 // This file is for showing the data from /pages/api/imggen/[type].ts
 import Head from "next/head";
 
-
 export default function ImgGen({type}: {type: string}) {
   return (
     <div>
