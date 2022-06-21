@@ -43,7 +43,7 @@
     "dev": "next",
     "update": "yarn upgrade-interactive",
     "lint": "eslint pages/**/*.ts && turbo run lint",
-    "start": "node -r dotenv/config dist/main.mjs",
+    "start": "next start",
     "test": "yarn node --experimental-vm-modules $(yarn bin jest)"
   },
   "type": "module",

@@ -1,13 +1,11 @@
 // CREDITS:
 // - Images and ideas from: https://github.com/DankMemer/imgen
 
-import { createCanvas, Image, GlobalFonts } from "@napi-rs/canvas";
-import { Dispatcher, request } from "undici";
-import BodyReadable from "undici/types/readable.js";
+import { createCanvas, Image } from "@napi-rs/canvas";
+import { request } from "undici";
 import { RISKY_API_BASE_URL } from "../index.mjs";
-import { fakeRequest, requestTypes } from "../tools.mjs";
 
-let imageBg;
+let imageBg: Image;
 
 
 export default async function makeImg(input: { imgLink: string }, config?: { affectBgLink?: string }): Promise<Buffer | {error?: string}> {
@@ -22,17 +20,18 @@ export default async function makeImg(input: { imgLink: string }, config?: { aff
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     try{
-        const [{ body: bodyBg }, { body: bodyImg } ]: {body: BodyReadable & Dispatcher.BodyMixin}[] = await Promise.all([
-            imageBg ? fakeRequest(imageBg, requestTypes.buffer): request(config.affectBgLink),
+        const [{ body: bodyBg }, { body: bodyImg } ] = await Promise.all([
+            imageBg ? {body: null} : request(config.affectBgLink),
             request(input.imgLink)
         ])
-        const [bgBuffer, imgBuffer] = await Promise.all([bodyBg.arrayBuffer(), bodyImg.arrayBuffer()])
+        const [bgBuffer, imgBuffer] = await Promise.all([imageBg ? null : bodyBg.arrayBuffer(), bodyImg.arrayBuffer()])
 
         if (!imageBg) {
             imageBg = new Image();
             imageBg.src = Buffer.from(bgBuffer);
-            context.drawImage(imageBg, 0, 0, canvas.width, canvas.height);
         }
+        context.drawImage(imageBg, 0, 0, canvas.width, canvas.height);
+
         const image = new Image();
         image.src = Buffer.from(imgBuffer);
         context.drawImage(image, 180, 383, 200, 157);

@@ -2,10 +2,10 @@
 // - Images and ideas from: https://github.com/DankMemer/imgen
 
 import { createCanvas, Image, GlobalFonts } from "@napi-rs/canvas";
-import { request, fetch, Dispatcher } from "undici";
+import { request, Dispatcher } from "undici";
 import BodyReadable from "undici/types/readable.js";
 import { RISKY_API_BASE_URL } from "../index.mjs";
-import { fakeRequest, requestTypes, wrapText } from "../tools.mjs";
+import { wrapText } from "../tools.mjs";
 
 let imageBg: Image;
 let fontBuffered: Buffer;
@@ -25,11 +25,11 @@ export default async function makeImg(input: { text: string }, config?: { fontLo
     try{
         // const [{ body: bodyBg }, { body: bodyImg } ] = await Promise.all([imageBg ? fakeRequest(imageBg, requestTypes.image): request(config.affectBgLink), request(input.imgLink)])
         const [{ body: bodyBg}, {body: font}, {body: fontEmoji }]: {body: BodyReadable & Dispatcher.BodyMixin}[] = await Promise.all([
-            imageBg ? fakeRequest(imageBg, requestTypes.buffer): request(config.cryBgLink), 
-            fontBuffered ? fakeRequest(fontBuffered, requestTypes.buffer): request(config.fontLocation), 
-            fontEmojiBuffered ? fakeRequest(fontEmojiBuffered, requestTypes.buffer): request(config.fontLocationEmoji ?? config.fontLocation)
+            imageBg ? {body: null} : request(config.cryBgLink), 
+            fontBuffered ? {body: null}: request(config.fontLocation), 
+            fontEmojiBuffered ?  {body: null}: request(config.fontLocationEmoji ?? config.fontLocation)
         ])
-        const [bgBuffer, fontBuffer, fontEmojiBuffer] = await Promise.all([bodyBg.arrayBuffer(), font.arrayBuffer(), fontEmoji.arrayBuffer()])
+        const [bgBuffer, fontBuffer, fontEmojiBuffer] = await Promise.all([imageBg ? null : bodyBg.arrayBuffer(), imageBg ? null : font.arrayBuffer(), imageBg ? null : fontEmoji.arrayBuffer()])
         
         fontBuffered ||= Buffer.from(fontBuffer);
         fontEmojiBuffered ||= Buffer.from(fontEmojiBuffer);
@@ -40,8 +40,8 @@ export default async function makeImg(input: { text: string }, config?: { fontLo
         if (!imageBg) {
             imageBg = new Image();
             imageBg.src = Buffer.from(bgBuffer);
-            context.drawImage(imageBg, 0, 0, canvas.width, canvas.height);
         }
+        context.drawImage(imageBg, 0, 0, canvas.width, canvas.height);
         
     } catch (e) {console.error(e); return{error: "Error when fetching assets"}}
 
