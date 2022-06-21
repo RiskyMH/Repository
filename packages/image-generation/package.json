@@ -1,0 +1,41 @@
+{
+    "name": "@riskyapi/image-generate",
+    "description": "...",
+    "version": "0.1.0",
+    "directories": {
+        "lib": "src"
+    },
+    "exports": {
+        "import": "./dist/index.mjs",
+        "types": "./dist/index.d.ts"
+    },
+    "files": [
+        "src"
+    ],
+    "main": "./dist/index.mjs",
+    "import": "./dist/index.mjs",
+    "scripts": {
+        "build": "tsc",
+        "prepublishOnly": "yarn build",
+        "lint": "eslint src/**/*.ts"
+    },
+    "type": "module",
+    "types": "./dist/index.d.ts",
+    "homepage": "https://github.com/RiskyMH/RiskyAPI/tree/main/packages/imggen",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/RiskyMH/RiskyAPI.git"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "dependencies": {
+        "@napi-rs/canvas": "0.1.17",
+        "undici": "5.5.1"
+    },
+    "devDependencies": {
+        "@types/node": "^18.0.0",
+        "eslint": "^5.16.0",
+        "typescript": "^4.7.4"
+    }
+}
