@@ -21,8 +21,10 @@ export default async function discordHandler(request: NextApiRequest, response: 
     if (!signature || !timestamp || !rawBody ) return response.status(405).json({ error: "Invalid headers and/or body" });
     const isValidRequest = verifyKey(rawBody, signature, timestamp, process.env.DISCORD_CLIENT_PUBLIC_KEY);
     if (!isValidRequest) return response.status(401).json({ error: "Bad request signature" });
-
+    
     const interaction: APIInteraction = request.body;
+    console.log(interaction.data);
+    console.log(JSON.stringify(interaction, null, 2));
 
     const baseHost = request.headers.host?.includes("localhost") ? "http://" + request.headers.host : "https://" + request.headers.host;
 
