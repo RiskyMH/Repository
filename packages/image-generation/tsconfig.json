@@ -1,0 +1,88 @@
+// {
+//     // Mapped from https://www.typescriptlang.org/tsconfig
+//     "include": ["src"],
+//     "exclude": ["dist"],
+//     "compilerOptions": {
+//         // Type Checking
+//         "allowUnreachableCode": false,
+//         "allowUnusedLabels": false,
+//         // if true: conflicts with discord-api-types
+//         "exactOptionalPropertyTypes": false,
+//         "noFallthroughCasesInSwitch": true,
+//         // "noImplicitOverride": true,
+//         "noImplicitReturns": true,
+//         "noUnusedLocals": true,
+//         "noUnusedParameters": true,
+//         "strict": true,
+//         "useUnknownInCatchVariables": true,
+
+//         // Modules
+// 		"module": "ES2022",
+//         "moduleResolution": "node",
+//         "resolveJsonModule": true,
+
+//         // Emit
+//         "declaration": true,
+//         "importHelpers": true,
+//         "importsNotUsedAsValues": "error",
+//         "inlineSources": true,
+//         "newLine": "lf",
+//         "noEmitHelpers": true,
+//         "outDir": "dist",
+//         "preserveConstEnums": true,
+//         "removeComments": false,
+//         "sourceMap": true,
+//         "esModuleInterop": true,
+//         "forceConsistentCasingInFileNames": true,
+
+//         // Language and Environment
+//         "emitDecoratorMetadata": true,
+//         "experimentalDecorators": true,
+//         "lib": ["ESNext", "es2021.intl"],
+//         "target": "ES2021",
+//         "useDefineForClassFields": true,
+
+//         // Output Formatting
+//         "pretty": false,
+
+//         // Completeness
+//         "skipDefaultLibCheck": true
+//     }
+// }
+
+
+{
+        "include": ["src"],
+        "exclude": ["dist"],
+
+    "compilerOptions": {
+        "target": "ES6",
+        "module": "ESNext",
+        "sourceMap": true,
+        "declaration": true,
+        "allowJs": true,
+        "outDir": "dist",
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
+        "skipLibCheck": true,
+        "strict": false,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": false,
+        "esModuleInterop": true,
+        // "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "moduleResolution": "Node16",
+        "incremental": true
+    },
+    // "include": [
+    //     "pages/api/**/*"
+    // ],
+    // "exclude": [
+    //     "node_modules",
+    //     "**/*.spec.ts"
+    // ]
+}

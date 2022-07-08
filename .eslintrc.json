@@ -1,0 +1,38 @@
+{
+    "env": {
+        // "es2021": true,
+        "node": true
+    },
+    "extends": [
+        "eslint:recommended"
+        // "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 2021,
+        "sourceType": "module",
+        "project": ["./tsconfig.json"]
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "rules": {
+
+        "quotes": [
+            "error",
+            "double"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "no-unused-vars": "warn",
+        "no-warning-comments": "warn",
+        "no-console": [
+            "warn",
+            {
+                "allow": ["warn", "error", "info"]
+            }
+        ]
+    }
+}

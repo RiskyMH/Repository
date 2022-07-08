@@ -102,3 +102,20 @@ dist
 
 # TernJS port file
 .tern-port
+
+
+.turbo
+.yarn/*
+!.yarn/patches
+.yarn/cache
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+/dist
+
+
+.vercel
+.next
+.log
